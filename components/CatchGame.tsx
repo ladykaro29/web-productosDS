@@ -280,64 +280,52 @@ const CatchGame = () => {
             </div>
 
             {/* Menus */}
-            <AnimatePresence>
-                {/* No 'loading' state anymore, always show menu first */}
-
-                {gameState === 'menu' && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-ds-green/90 backdrop-blur-sm flex flex-col items-center justify-center text-white z-10"
+            {/* Menus - Reduced Complexity for Stability */}
+            {gameState === 'menu' && (
+                <div key="menu" className="absolute inset-0 bg-ds-green/90 backdrop-blur-sm flex flex-col items-center justify-center text-white z-50">
+                    <h1 className="text-5xl md:text-6xl font-display font-black text-ds-yellow mb-2 drop-shadow-lg text-center leading-none">
+                        LLUVIA DE<br />SNACKS
+                    </h1>
+                    <p className="text-xl mb-8 max-w-sm text-center opacity-90">
+                        ¡Mueve la cesta para atrapar los Productos DS!
+                    </p>
+                    <button
+                        onClick={startGame}
+                        className="bg-white text-ds-green px-12 py-5 rounded-full font-black text-2xl shadow-[0_10px_0_rgb(0,0,0,0.2)] hover:scale-105 active:scale-95 active:shadow-none transition-all flex items-center gap-3"
                     >
-                        <h1 className="text-5xl md:text-6xl font-display font-black text-ds-yellow mb-2 drop-shadow-lg text-center leading-none">
-                            LLUVIA DE<br />SNACKS
-                        </h1>
-                        <p className="text-xl mb-8 max-w-sm text-center opacity-90">
-                            ¡Mueve la cesta para atrapar los Productos DS!
-                        </p>
+                        <Play className="w-8 h-8 fill-ds-green" />
+                        JUGAR
+                    </button>
+                </div>
+            )}
+
+            {gameState === 'gameover' && (
+                <div key="gameover" className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center text-white z-50">
+                    <div className="text-ds-yellow mb-4 flex flex-col items-center">
+                        <Trophy className="w-16 h-16 mb-2" />
+                        <p className="text-center font-bold text-xl">RÉCORD: {highScore}</p>
+                    </div>
+                    <h2 className="text-5xl font-black mb-2">¡SE ACABÓ!</h2>
+                    <p className="text-4xl font-bold mb-10 text-white">Puntos: {score}</p>
+
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <button
+                            onClick={() => window.location.reload()} // Force reload to exit safely
+                            className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-2"
+                        >
+                            <X className="w-5 h-5" />
+                            Salir
+                        </button>
                         <button
                             onClick={startGame}
-                            className="bg-white text-ds-green px-12 py-5 rounded-full font-black text-2xl shadow-[0_10px_0_rgb(0,0,0,0.2)] hover:scale-105 active:scale-95 active:shadow-none transition-all flex items-center gap-3"
+                            className="bg-ds-yellow text-ds-dark px-10 py-4 rounded-full font-black text-xl shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
                         >
-                            <Play className="w-8 h-8 fill-ds-green" />
-                            JUGAR
+                            <RotateCcw className="w-6 h-6" />
+                            Intentar de nuevo
                         </button>
-                    </motion.div>
-                )}
-
-                {gameState === 'gameover' && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center text-white z-20"
-                    >
-                        <div className="text-ds-yellow mb-4 flex flex-col items-center">
-                            <Trophy className="w-16 h-16 mb-2" />
-                            <p className="text-center font-bold text-xl">RÉCORD: {highScore}</p>
-                        </div>
-                        <h2 className="text-5xl font-black mb-2">¡SE ACABÓ!</h2>
-                        <p className="text-4xl font-bold mb-10 text-white">Puntos: {score}</p>
-
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <Link href="/">
-                                <button className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-2">
-                                    <X className="w-5 h-5" />
-                                    Salir
-                                </button>
-                            </Link>
-                            <button
-                                onClick={startGame}
-                                className="bg-ds-yellow text-ds-dark px-10 py-4 rounded-full font-black text-xl shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
-                            >
-                                <RotateCcw className="w-6 h-6" />
-                                Intentar de nuevo
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
