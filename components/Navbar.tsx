@@ -45,12 +45,13 @@ const Navbar = () => {
 
                     {/* Navigation Links */}
                     <div className="hidden md:flex items-center gap-8">
-                        {['Inicio', 'Productos', 'Galería', 'Nosotros', 'Contacto'].map((item) => (
+                        {['Inicio', 'Productos', 'Galería', 'Juegos', 'Nosotros'].map((item) => (
                             <Link
                                 key={item}
                                 href={item === 'Inicio' ? '/' : `/${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
-                                className="text-white font-semibold hover:text-ds-yellow transition-colors drop-shadow-sm"
+                                className={`font-semibold transition-colors drop-shadow-sm flex items-center gap-1 ${item === 'Juegos' ? 'text-ds-yellow hover:text-white animate-pulse' : 'text-white hover:text-ds-yellow'}`}
                             >
+                                {item === 'Juegos' && <span>🎮</span>}
                                 {item}
                             </Link>
                         ))}
