@@ -52,39 +52,44 @@ const RecipesBanner = () => {
                         </div>
 
                         {/* Image Composition */}
-                        <div className="md:w-5/12 relative h-[300px] md:h-[400px] w-full flex items-center justify-center">
+                        <div className="md:w-6/12 relative h-[400px] md:h-[500px] w-full flex items-center justify-center">
                             <motion.div
-                                initial={{ opacity: 0, x: 50, rotate: 10 }}
-                                whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.8 }}
-                                className="relative w-full h-full"
+                                className="grid grid-cols-3 gap-4 md:gap-6 relative z-10 w-full max-w-lg"
                             >
-                                {/* Product Bag (Nanobanana proxy - using platanos picante for color contrast or just generic platanos) */}
-                                <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-48 md:w-64 h-auto z-20">
-                                    <Image
-                                        src="/products/platanos-sal-v2.png" // Using Sal as placeholder for Nanobanana
-                                        alt="Producto Nanobanana"
-                                        width={400}
-                                        height={500}
-                                        className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
-                                    />
-                                </div>
-
-                                {/* Recipe Dish (Visual placeholder) */}
-                                <div className="absolute top-1/2 right-0 -translate-y-1/2 w-48 md:w-64 h-48 md:h-64 bg-white rounded-full border-4 border-ds-yellow shadow-2xl overflow-hidden z-10 flex items-center justify-center">
-                                    {/* Since we don't have a recipe photo, using another product or ingredient image cropped */}
-                                    <Image
-                                        src="/images/galeria/degustaiones-clientes-felices (8).jpg" // Using a happy customer or food shot from gallery
-                                        alt="Receta Terminada"
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </div>
-
-                                {/* Floating Elements */}
-                                <div className="absolute -top-10 right-10 w-20 h-20 bg-yellow-400 rounded-full blur-xl opacity-60 animate-pulse"></div>
+                                {[
+                                    { src: "/products/platanos-sal-v2.png", alt: "Platanitos Sal" },
+                                    { src: "/products/platanos-ajo-final.png", alt: "Platanitos Ajo" },
+                                    { src: "/products/platanos-picante-final.png", alt: "Platanitos Picante" },
+                                    { src: "/products/yuca-sal-final.png", alt: "Yuca Sal" },
+                                    { src: "/products/yuca-limon.png", alt: "Yuca Limón" },
+                                    { src: "/products/trozitos.png", alt: "Trozitos" },
+                                ].map((product, index) => (
+                                    <motion.div
+                                        key={index}
+                                        initial={{ opacity: 0, y: 30 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                                        whileHover={{ y: -10, rotate: index % 2 === 0 ? 3 : -3, scale: 1.1 }}
+                                        className="relative aspect-[3/4] w-full"
+                                    >
+                                        <Image
+                                            src={product.src}
+                                            alt={product.alt}
+                                            fill
+                                            className="object-contain drop-shadow-xl"
+                                            sizes="(max-width: 768px) 33vw, 150px"
+                                        />
+                                    </motion.div>
+                                ))}
                             </motion.div>
+
+                            {/* Decorative background circle behind products */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/5 rounded-full blur-3xl -z-0"></div>
                         </div>
                     </div>
                 </div>
