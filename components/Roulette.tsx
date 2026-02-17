@@ -22,6 +22,57 @@ const prizes = [
     { label: '1 Tostón de 28g', type: 'win', code: 'DS28G' }, // Segment 8
 ];
 
+// Utility to generate sound effects using Web Audio API
+const playSound = (type: 'tick' | 'win' | 'lose') => {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (type === 'tick') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+    } else if (type === 'win') {
+        const now = ctx.currentTime;
+        // Simple winning arpeggio
+        [440, 554, 659, 880].forEach((freq, i) => {
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+
+            osc2.type = 'sine';
+            osc2.frequency.value = freq;
+
+            const time = now + (i * 0.1);
+            gain2.gain.setValueAtTime(0, time);
+            gain2.gain.linearRampToValueAtTime(0.2, time + 0.05);
+            gain2.gain.exponentialRampToValueAtTime(0.01, time + 0.4);
+
+            osc2.start(time);
+            osc2.stop(time + 0.4);
+        });
+    } else if (type === 'lose') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(100, ctx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.4);
+    }
+};
+
 const Roulette = () => {
     const [spinning, setSpinning] = useState(false);
     const [rotation, setRotation] = useState(0);
@@ -32,6 +83,41 @@ const Roulette = () => {
 
         setSpinning(true);
         setResult(null);
+
+        // Simulation of ticking sound
+        let tickCount = 0;
+        const totalTicks = 50; // Approximate number of simulared ticks
+        const duration = 5000;
+
+        // Use a cubic-bezier-like timing for ticks to match visual easing
+        const playTicks = () => {
+            const now = Date.now();
+            const startTime = now;
+
+            const tick = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+
+                if (progress >= 1) return;
+
+                // Simple implementation: Tick more frequently in the middle, less at end
+                // We'll just set random intervals that increase properly?
+                // Actually, let's just use regular intervals that decay.
+            };
+
+            // Simpler simulated ticking pattern
+            // Start fast, end slow
+            let delay = 50;
+            const runTick = () => {
+                if (delay > 400) return; // Stop if too slow
+                playSound('tick');
+                delay = delay * 1.1; // Exponential slowdown
+                if (delay < 400) setTimeout(runTick, delay);
+            };
+            runTick();
+        };
+
+        playTicks();
 
         // Random rotation logic
         // We want to land on a random segment.
@@ -78,6 +164,8 @@ const Roulette = () => {
             const winner = prizes[segmentIndex];
             setResult(winner);
 
+            playSound(winner.type === 'win' ? 'win' : 'lose');
+
             if (winner.type === 'win') {
                 confetti({
                     particleCount: 150,
@@ -101,12 +189,15 @@ const Roulette = () => {
                     <h2 className="text-4xl md:text-5xl font-display font-black text-ds-dark mb-4">
                         ¡Prueba tu <span className="text-ds-red">Suerte!</span>
                     </h2>
-                    <p className="text-xl text-gray-600">
+                    <p className="text-xl text-gray-600 mb-2">
                         Gira la ruleta y gana premios deliciosos al instante.
+                    </p>
+                    <p className="text-sm font-bold text-ds-red uppercase tracking-wider">
+                        * Válido solo en puntos de degustación *
                     </p>
                 </motion.div>
 
-                <div className="relative w-80 h-80 md:w-96 md:h-96 mx-auto mb-12">
+                <div className="relative w-96 h-96 md:w-[32rem] md:h-[32rem] lg:w-[36rem] lg:h-[36rem] mx-auto mb-12">
                     {/* Arrow Marker */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-6 z-20 drop-shadow-lg">
                         <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[40px] border-t-ds-dark"></div>
@@ -126,8 +217,7 @@ const Roulette = () => {
                         />
                     </motion.div>
 
-                    {/* Center Cap */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-md z-10" />
+
                 </div>
 
                 <button

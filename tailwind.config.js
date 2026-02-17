@@ -10,7 +10,11 @@ module.exports = {
             colors: {
                 ds: {
                     red: "#E61E25",
-                    yellow: "#F2C94C",
+                    yellow: "#FFD200", // Brighter yellow from logo
+                    green: "#4A7C24", // Plantain leaf green
+                    lime: "#84BD00", // Yuca lime green
+                    orange: "#F58220", // Trozitos orange
+                    brown: "#5D3A1A", // Yuca brown
                     dark: "#1A1A1A",
                     light: "#FAFAFA",
                 },

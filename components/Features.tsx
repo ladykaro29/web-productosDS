@@ -38,7 +38,7 @@ const Features = () => {
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-display font-bold text-ds-dark mb-4">
-                        ¿Por qué elegir <span className="text-ds-red">DS?</span>
+                        ¿Por qué elegir <span className="text-ds-green">DS?</span>
                     </h2>
                     <p className="text-gray-600 max-w-2xl mx-auto text-lg">
                         No somos solo un snack, somos una experiencia. Descubre lo que nos hace únicos.

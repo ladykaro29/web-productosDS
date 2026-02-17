@@ -13,8 +13,21 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-    title: "Productos DS",
-    description: "Snacks vibrantes para cada momento",
+    metadataBase: new URL('https://productosds.com'),
+    title: {
+        default: "Productos DS | Sabor que Explota",
+        template: "%s | Productos DS"
+    },
+    description: "Descubre los snacks más crujientes y deliciosos de Venezuela. Platanitos, yuca, papas y más, hechos con pasión en el Sur del Lago.",
+    keywords: ["snacks", "platanitos", "tostones", "yuca", "venezuela", "sur del lago", "comida", "frituras"],
+    openGraph: {
+        title: "Productos DS | Sabor que Explota",
+        description: "Snacks vibrantes para cada momento. ¡Pruébalos!",
+        url: 'https://productosds.com',
+        siteName: 'Productos DS',
+        locale: 'es_VE',
+        type: 'website',
+    },
 };
 
 export default function RootLayout({

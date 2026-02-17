@@ -3,6 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Truck, TrendingUp, Users } from 'lucide-react';
 
@@ -21,7 +22,7 @@ const DistributorCTA = () => {
                         viewport={{ once: true }}
                         className="md:w-1/2"
                     >
-                        <div className="inline-block bg-ds-red text-white text-sm font-bold px-3 py-1 rounded-full mb-4">
+                        <div className="inline-block bg-ds-green text-white text-sm font-bold px-3 py-1 rounded-full mb-4">
                             OPORTUNIDAD DE NEGOCIO
                         </div>
                         <h2 className="text-4xl md:text-5xl font-display font-black mb-6">
@@ -66,17 +67,17 @@ const DistributorCTA = () => {
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="md:w-1/2 relative min-h-[400px] w-full flex items-center justify-center"
+                        className="md:w-1/2 w-full flex items-center justify-center"
                     >
-                        {/* Abstract visual since we don't have a specific distributor image yet */}
-                        <div className="relative w-full h-full min-h-[300px] bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm p-8 flex items-center justify-center">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-ds-red/30 rounded-full blur-3xl" />
-                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-ds-yellow/30 rounded-full blur-3xl" />
-
-                            <div className="text-center">
-                                <h3 className="text-3xl font-display font-black mb-2">DS</h3>
-                                <p className="text-gray-400">PARTNER PROGRAM</p>
-                            </div>
+                        <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
+                            <Image
+                                src="/images/distribuidor-v2.png"
+                                alt="Sé un Distribuidor DS"
+                                width={0}
+                                height={0}
+                                sizes="100vw"
+                                className="w-full h-auto hover:scale-105 transition-transform duration-700"
+                            />
                         </div>
                     </motion.div>
 

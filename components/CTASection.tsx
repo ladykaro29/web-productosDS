@@ -30,13 +30,15 @@ const CTASection = () => {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="bg-ds-yellow text-ds-dark px-10 py-5 rounded-full font-bold text-xl flex items-center gap-3 shadow-lg hover:bg-yellow-300 transition-colors"
-                        >
-                            Quiero mi Descuento <ArrowRight className="w-6 h-6" />
-                        </motion.button>
+                        <a href="https://wa.me/584247540609?text=Hola,%20quisiera%20hacer%20un%20pedido%20de%20Productos%20DS!%20Tengo%20el%20código%20DSNACK20" target="_blank" rel="noopener noreferrer">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="bg-ds-yellow text-ds-dark px-10 py-5 rounded-full font-bold text-xl flex items-center gap-3 shadow-lg hover:bg-yellow-300 transition-colors"
+                            >
+                                Quiero mi Descuento <ArrowRight className="w-6 h-6" />
+                            </motion.button>
+                        </a>
                         <span className="text-sm text-white/70 font-mono mt-4 sm:mt-0">Código: DSNACK20</span>
                     </div>
                 </motion.div>
