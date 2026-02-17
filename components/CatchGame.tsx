@@ -36,7 +36,7 @@ const PRODUCTS = [
 
 const CatchGame = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [gameState, setGameState] = useState<'loading' | 'menu' | 'playing' | 'gameover'>('loading');
+    const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu'); // Start at menu directly
     const [score, setScore] = useState(0);
     const [lives, setLives] = useState(3);
     const [highScore, setHighScore] = useState(0);
@@ -51,16 +51,17 @@ const CatchGame = () => {
     const spawnRateRef = useRef(SPAWN_RATE_INITIAL);
     const gameSpeedRef = useRef(SPEED_INITIAL);
     const imagesRef = useRef<HTMLImageElement[]>([]);
+    const imagesLoadedRef = useRef(false);
 
-    // Preload Images
+    // Preload Images (Non-blocking)
     useEffect(() => {
         let loadedCount = 0;
         const totalImages = PRODUCTS.length;
 
         const checkLoaded = () => {
             loadedCount++;
-            if (loadedCount === totalImages) {
-                setGameState('menu');
+            if (loadedCount >= totalImages) {
+                imagesLoadedRef.current = true;
             }
         };
 
@@ -68,22 +69,16 @@ const CatchGame = () => {
             const img = new Image();
             img.src = src;
             img.onload = checkLoaded;
-            // Handle error or cached images
-            if (img.complete) {
-                checkLoaded();
-            }
+            img.onerror = checkLoaded; // Count errors too so we don't wait forever
+            if (img.complete) checkLoaded();
             imagesRef.current.push(img);
         });
 
+        // Safety timeout
+        setTimeout(() => { imagesLoadedRef.current = true; }, 3000);
+
         const saved = localStorage.getItem('ds_game_highscore');
         if (saved) setHighScore(parseInt(saved));
-
-        // Fallback for loading timeout
-        const timeout = setTimeout(() => {
-            if (gameState === 'loading') setGameState('menu');
-        }, 2000);
-
-        return () => clearTimeout(timeout);
     }, []);
 
     // Game Loop
@@ -100,16 +95,17 @@ const CatchGame = () => {
             frameCountRef.current++;
 
             // Spawn Items
-            // Ensure we have loaded images
-            if (frameCountRef.current % spawnRateRef.current === 0 && imagesRef.current.length > 0) {
-                const randomImage = imagesRef.current[Math.floor(Math.random() * imagesRef.current.length)];
+            // Use fallback if images not fully loaded, or just spawn anyway and use rects
+            if (frameCountRef.current % spawnRateRef.current === 0) {
+                const randomImageIndex = Math.floor(Math.random() * PRODUCTS.length); // Use index to pick image safely
+                const randomImage = imagesRef.current[randomImageIndex];
 
                 const newItem: GameObject = {
                     x: Math.random() * (GAME_WIDTH - ITEM_SIZE),
                     y: -ITEM_SIZE,
                     width: ITEM_SIZE,
                     height: ITEM_SIZE,
-                    image: randomImage,
+                    image: randomImage, // Might be incomplete/loading
                     type: 'good',
                     id: Date.now() + Math.random(),
                     speed: gameSpeedRef.current + Math.random() * 2
@@ -127,16 +123,28 @@ const CatchGame = () => {
             itemsRef.current.forEach((item, index) => {
                 item.y += item.speed;
 
-                // Draw Item with shadow/glow
-                ctx.save();
-                ctx.shadowColor = 'rgba(0,0,0,0.2)';
-                ctx.shadowBlur = 10;
-                ctx.drawImage(item.image, item.x, item.y, item.width, item.height);
-                ctx.restore();
+                // Draw Item
+                if (item.image && item.image.complete && item.image.naturalWidth !== 0) {
+                    ctx.save();
+                    ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                    ctx.shadowBlur = 10;
+                    ctx.drawImage(item.image, item.x, item.y, item.width, item.height);
+                    ctx.restore();
+                } else {
+                    // Fallback Render (Yellow Box) if image fails
+                    ctx.fillStyle = '#FCD34D'; // Yellow
+                    ctx.beginPath();
+                    ctx.roundRect(item.x, item.y, item.width, item.height, 10);
+                    ctx.fill();
+                    ctx.fillStyle = '#000';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('SNACK', item.x + item.width / 2, item.y + item.height / 2);
+                }
 
                 // Collision Detection
                 if (
-                    item.y + item.height > GAME_HEIGHT - PLAYER_HEIGHT + 20 && // Hit basket top area
+                    item.y + item.height > GAME_HEIGHT - PLAYER_HEIGHT + 20 &&
                     item.y < GAME_HEIGHT &&
                     item.x + item.width > playerXRef.current &&
                     item.x < playerXRef.current + PLAYER_WIDTH
@@ -158,16 +166,14 @@ const CatchGame = () => {
             });
 
             // Draw Basket (Player)
-            // Use canvas drawing to ensure it always renders
             const x = playerXRef.current;
             const y = GAME_HEIGHT - PLAYER_HEIGHT + 20;
             const w = PLAYER_WIDTH;
             const h = PLAYER_HEIGHT - 20;
 
             // Basket Body
-            ctx.fillStyle = '#f59e0b'; // Amber-500
+            ctx.fillStyle = '#f59e0b';
             ctx.beginPath();
-            // Rounded bottom rect manually or using roundRect if supported
             if (ctx.roundRect) {
                 ctx.roundRect(x, y, w, h, [0, 0, 30, 30]);
             } else {
@@ -175,13 +181,13 @@ const CatchGame = () => {
             }
             ctx.fill();
 
-            // Basket Rim/Detail
-            ctx.strokeStyle = '#78350f'; // Amber-900
+            // Basket Rim
+            ctx.strokeStyle = '#78350f';
             ctx.lineWidth = 4;
             ctx.stroke();
 
             // Handle
-            ctx.fillStyle = '#166534'; // Green-800
+            ctx.fillStyle = '#166534';
             ctx.fillRect(x - 10, y + 10, 20, 10);
             ctx.fillRect(x + w - 10, y + 10, 20, 10);
 
@@ -224,7 +230,6 @@ const CatchGame = () => {
         const handleMouseMove = (e: MouseEvent | TouchEvent) => {
             if (canvasRef.current && gameState === 'playing') {
                 const rect = canvasRef.current.getBoundingClientRect();
-                // Scale factor for responsivity
                 const scaleX = GAME_WIDTH / rect.width;
 
                 let clientX = 0;
@@ -235,7 +240,6 @@ const CatchGame = () => {
                 }
 
                 const relativeX = (clientX - rect.left) * scaleX;
-
                 playerXRef.current = Math.max(0, Math.min(GAME_WIDTH - PLAYER_WIDTH, relativeX - PLAYER_WIDTH / 2));
             }
         };
@@ -251,7 +255,7 @@ const CatchGame = () => {
     }, [gameState]);
 
     return (
-        <div className="relative w-full aspect-[4/3] bg-gradient-to-b from-sky-200 to-green-100 rounded-3xl overflow-hidden shadow-2xl border-8 border-white mx-auto">
+        <div className="relative w-full aspect-[4/3] bg-gradient-to-b from-sky-200 to-green-100 rounded-3xl overflow-hidden shadow-2xl border-8 border-white mx-auto min-h-[300px]">
             <canvas
                 ref={canvasRef}
                 width={GAME_WIDTH}
@@ -277,14 +281,7 @@ const CatchGame = () => {
 
             {/* Menus */}
             <AnimatePresence>
-                {gameState === 'loading' && (
-                    <motion.div
-                        className="absolute inset-0 bg-ds-green/90 flex flex-col items-center justify-center text-white"
-                    >
-                        <div className="w-16 h-16 border-4 border-white border-t-ds-yellow rounded-full animate-spin mb-4"></div>
-                        <h2 className="text-2xl font-bold">Cargando Snacks...</h2>
-                    </motion.div>
-                )}
+                {/* No 'loading' state anymore, always show menu first */}
 
                 {gameState === 'menu' && (
                     <motion.div
