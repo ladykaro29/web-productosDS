@@ -109,27 +109,40 @@ const MemoryGame = () => {
                 {cards.map((card) => (
                     <div
                         key={card.uniqueId}
-                        className="relative cursor-pointer perspective-1000 group is-hoverable"
+                        className="relative cursor-pointer group"
+                        style={{ perspective: '1000px' }}
                         onClick={() => handleCardClick(card.uniqueId)}
                     >
                         <motion.div
-                            className="w-full h-full relative preserve-3d transition-all duration-500 aspect-[3/4]"
+                            className="w-full h-full relative transition-all duration-500 aspect-[3/4]"
+                            initial={false}
                             animate={{ rotateY: card.isFlipped || card.isMatched ? 180 : 0 }}
+                            transition={{ duration: 0.6, animationDirection: "normal" }}
+                            style={{ transformStyle: 'preserve-3d' }}
                         >
-                            {/* Front (Hidden - Shows Logo) */}
-                            <div className="absolute inset-0 bg-ds-green rounded-xl backface-hidden flex items-center justify-center border-4 border-white shadow-md group-hover:scale-105 transition-transform">
-                                <div className="relative w-3/4 h-3/4 opacity-90">
+                            {/* Front (Hidden state - Shows Logo - 0 deg) */}
+                            <div
+                                className="absolute inset-0 bg-ds-green rounded-xl flex items-center justify-center border-4 border-white shadow-md overflow-hidden p-4"
+                                style={{ backfaceVisibility: 'hidden' }}
+                            >
+                                <div className="relative w-full h-full opacity-80">
                                     <Image
                                         src="/logo.png"
                                         alt="DS Logo"
                                         fill
-                                        className="object-contain filter brightness-0 invert" // White logo
+                                        className="object-contain brightness-0 invert"
                                     />
                                 </div>
                             </div>
 
-                            {/* Back (Revealed - Shows Product) */}
-                            <div className="absolute inset-0 bg-white rounded-xl backface-hidden rotate-y-180 flex items-center justify-center border-4 border-ds-yellow shadow-inner p-2">
+                            {/* Back (Revealed state - Shows Product - 180 deg) */}
+                            <div
+                                className="absolute inset-0 bg-white rounded-xl flex items-center justify-center border-4 border-ds-yellow shadow-inner p-2"
+                                style={{
+                                    backfaceVisibility: 'hidden',
+                                    transform: 'rotateY(180deg)'
+                                }}
+                            >
                                 <div className="relative w-full h-full">
                                     <Image
                                         src={card.src}
