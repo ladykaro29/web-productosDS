@@ -12,8 +12,6 @@ const CARDS_DATA = [
     { id: 4, src: '/products/yuca-sal-final.png', name: 'Yuca Sal' },
     { id: 5, src: '/products/yuca-limon.png', name: 'Yuca Limón' },
     { id: 6, src: '/products/trozitos.png', name: 'Trozitos' },
-    { id: 7, src: '/logo.png', name: 'DS Logo' }, // Bonus card
-    { id: 8, src: '/images/galeria/degustaiones-clientes-felices (8).jpg', name: 'Happy Client' }, // Or another distinctive image
 ];
 
 // Duplicate and shuffle
@@ -107,7 +105,7 @@ const MemoryGame = () => {
                 </button>
             </div>
 
-            <div className="grid grid-cols-4 gap-3 md:gap-4 aspect-square md:aspect-video">
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 aspect-square md:aspect-video">
                 {cards.map((card) => (
                     <div
                         key={card.uniqueId}
@@ -118,12 +116,19 @@ const MemoryGame = () => {
                             className="w-full h-full relative preserve-3d transition-all duration-500 aspect-[3/4]"
                             animate={{ rotateY: card.isFlipped || card.isMatched ? 180 : 0 }}
                         >
-                            {/* Front (Hidden) */}
+                            {/* Front (Hidden - Shows Logo) */}
                             <div className="absolute inset-0 bg-ds-green rounded-xl backface-hidden flex items-center justify-center border-4 border-white shadow-md group-hover:scale-105 transition-transform">
-                                <span className="text-4xl">💊</span> {/* Initial generic icon */}
+                                <div className="relative w-3/4 h-3/4 opacity-90">
+                                    <Image
+                                        src="/logo.png"
+                                        alt="DS Logo"
+                                        fill
+                                        className="object-contain filter brightness-0 invert" // White logo
+                                    />
+                                </div>
                             </div>
 
-                            {/* Back (Revealed) */}
+                            {/* Back (Revealed - Shows Product) */}
                             <div className="absolute inset-0 bg-white rounded-xl backface-hidden rotate-y-180 flex items-center justify-center border-4 border-ds-yellow shadow-inner p-2">
                                 <div className="relative w-full h-full">
                                     <Image
@@ -152,7 +157,7 @@ const MemoryGame = () => {
                             <p className="text-xl text-gray-600 mb-8">Lo hiciste en {moves} movimientos.</p>
                             <button
                                 onClick={resetGame}
-                                className="bg-ds-green text-white px-8 py-4 rounded-full font-bold text-xl hover:scale-105 transition-transform"
+                                className="bg-ds-green text-white px-8 py-4 rounded-full font-black text-xl hover:scale-105 transition-transform"
                             >
                                 Jugar de Nuevo
                             </button>
