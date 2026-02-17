@@ -18,20 +18,20 @@ const RecipesBanner = () => {
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="bg-white/10 backdrop-blur-md rounded-[3rem] p-8 md:p-12 border border-white/20 shadow-2xl overflow-hidden relative">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
 
                         {/* Content */}
-                        <div className="md:w-1/2 text-white z-10">
+                        <div className="md:w-5/12 text-white z-10 text-center md:text-left">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                             >
-                                <div className="inline-flex items-center gap-2 bg-ds-yellow text-ds-dark font-black px-4 py-1 rounded-full text-sm mb-6 shadow-lg">
+                                <div className="inline-flex items-center gap-2 bg-ds-yellow text-ds-dark font-black px-4 py-1 rounded-full text-sm mb-6 shadow-lg mx-auto md:mx-0">
                                     <ChefHat className="w-4 h-4" />
                                     NUEVO RECETARIO
                                 </div>
-                                <h2 className="text-4xl md:text-6xl font-display font-black leading-none mb-6">
+                                <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-black leading-none mb-6">
                                     ¡Desata tu <br />
                                     <span className="text-ds-yellow relative">
                                         Creatividad!
@@ -40,11 +40,11 @@ const RecipesBanner = () => {
                                         </svg>
                                     </span>
                                 </h2>
-                                <p className="text-xl text-green-50 mb-8 max-w-lg">
+                                <p className="text-lg md:text-xl text-green-50 mb-8 max-w-md mx-auto md:mx-0">
                                     Descubre cómo transformar tus snacks favoritos en platos increíbles. ¿Probaste el <strong>Nanobanana Split</strong>?
                                 </p>
                                 <Link href="/recetas">
-                                    <button className="bg-white text-ds-green px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 shadow-lg hover:bg-green-50 transition-all hover:scale-105 active:scale-95">
+                                    <button className="bg-white text-ds-green px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 shadow-lg hover:bg-green-50 transition-all hover:scale-105 active:scale-95 mx-auto md:mx-0">
                                         Ver Todas las Recetas <ArrowRight className="w-5 h-5" />
                                     </button>
                                 </Link>
@@ -52,7 +52,7 @@ const RecipesBanner = () => {
                         </div>
 
                         {/* Image Composition */}
-                        <div className="md:w-1/2 relative h-[300px] md:h-[400px] w-full flex items-center justify-center">
+                        <div className="md:w-5/12 relative h-[300px] md:h-[400px] w-full flex items-center justify-center">
                             <motion.div
                                 initial={{ opacity: 0, x: 50, rotate: 10 }}
                                 whileInView={{ opacity: 1, x: 0, rotate: 0 }}
