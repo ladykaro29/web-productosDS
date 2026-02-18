@@ -115,7 +115,14 @@ const GameCard = ({ title, description, icon, color, onClick, difficulty }: any)
         <h3 className="text-2xl font-black font-display mb-2">{title}</h3>
         <p className="text-white/90 mb-6 leading-relaxed min-h-[3rem]">{description}</p>
 
-        <button className="w-full bg-white text-gray-900 py-3 rounded-xl font-black flex items-center justify-center gap-2 group-hover:bg-ds-yellow transition-colors shadow-lg">
+        <button
+            type="button"
+            className="w-full bg-white text-gray-900 py-3 rounded-xl font-black flex items-center justify-center gap-2 group-hover:bg-ds-yellow transition-colors shadow-lg"
+            onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+            }}
+        >
             <Play className="w-5 h-5 fill-current" /> JUGAR
         </button>
     </motion.div>
