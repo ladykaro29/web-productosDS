@@ -54,42 +54,23 @@ const RecipesBanner = () => {
                         {/* Image Composition */}
                         <div className="md:w-6/12 relative h-[400px] md:h-[500px] w-full flex items-center justify-center">
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
+                                initial={{ opacity: 0, scale: 0.8, x: 50 }}
+                                whileInView={{ opacity: 1, scale: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.8 }}
-                                className="grid grid-cols-3 gap-4 md:gap-6 relative z-10 w-full max-w-lg"
+                                className="relative z-10 w-full h-full"
                             >
-                                {[
-                                    { src: "/products/platanos-sal-v2.png", alt: "Platanitos Sal" },
-                                    { src: "/products/platanos-ajo-final.png", alt: "Platanitos Ajo" },
-                                    { src: "/products/platanos-picante-final.png", alt: "Platanitos Picante" },
-                                    { src: "/products/yuca-sal-final.png", alt: "Yuca Sal" },
-                                    { src: "/products/yuca-limon.png", alt: "Yuca Limón" },
-                                    { src: "/products/trozitos.png", alt: "Trozitos" },
-                                ].map((product, index) => (
-                                    <motion.div
-                                        key={index}
-                                        initial={{ opacity: 0, y: 30 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: index * 0.1, duration: 0.5 }}
-                                        whileHover={{ y: -10, rotate: index % 2 === 0 ? 3 : -3, scale: 1.1 }}
-                                        className="relative aspect-[3/4] w-full"
-                                    >
-                                        <Image
-                                            src={product.src}
-                                            alt={product.alt}
-                                            fill
-                                            className="object-contain drop-shadow-xl"
-                                            sizes="(max-width: 768px) 33vw, 150px"
-                                        />
-                                    </motion.div>
-                                ))}
+                                <Image
+                                    src="/images/girl-eating.png"
+                                    alt="Disfrutando Snacks DS"
+                                    fill
+                                    className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                />
                             </motion.div>
 
-                            {/* Decorative background circle behind products */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/5 rounded-full blur-3xl -z-0"></div>
+                            {/* Decorative background circle */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/10 rounded-full blur-3xl -z-0"></div>
                         </div>
                     </div>
                 </div>
