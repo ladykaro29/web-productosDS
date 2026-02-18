@@ -147,20 +147,25 @@ const WhackGame = () => {
 
             {/* Start Overlay */}
             {!isPlaying && (
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+                <div key="overlay" className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
                     <div className="text-center text-white">
-                        {timeLeft === 0 && (
+                        {timeLeft <= 0 ? (
                             <div className="mb-6">
-                                <h2 className="text-4xl font-black text-yellow-500 mb-2">¡TIEMPO!</h2>
-                                <p className="text-2xl">Tu puntuación final: {score}</p>
+                                <h2 className="text-4xl font-black text-ds-yellow mb-2">¡TIEMPO!</h2>
+                                <p className="text-2xl font-bold">Puntos Totales: {score}</p>
                             </div>
+                        ) : (
+                            <h2 className="text-4xl font-black text-ds-yellow mb-8 drop-shadow-lg">
+                                APLASTA AL<br />SNACK
+                            </h2>
                         )}
+
                         <button
                             onClick={startGame}
-                            className="bg-ds-yellow text-ds-dark px-12 py-6 rounded-full font-black text-3xl shadow-xl hover:scale-105 transition-transform flex items-center gap-4 mx-auto"
+                            className="bg-ds-yellow text-ds-dark px-10 py-5 rounded-full font-black text-2xl shadow-xl hover:scale-105 transition-transform flex items-center gap-3 mx-auto"
                         >
-                            <Play className="w-10 h-10 fill-current" />
-                            {timeLeft === 0 ? 'JUGAR OTRA VEZ' : 'EMPEZAR JUEGO'}
+                            <Play className="w-8 h-8 fill-ds-dark" />
+                            {timeLeft <= 0 ? 'JUGAR OTRA VEZ' : 'EMPEZAR'}
                         </button>
                     </div>
                 </div>
