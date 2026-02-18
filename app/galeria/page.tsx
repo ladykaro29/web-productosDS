@@ -146,37 +146,53 @@ export default function GalleryPage() {
                         Momentos
                     </span>{' '}
                     <span className="text-ds-dark inline-flex items-center">
-                        <Typewriter
-                            phrases={[
-                                "Inolvidables",
-                                "Crujientes",
-                                "Explosivos",
-                                "Divertidos",
-                                "Para Compartir",
-                                "Con Sabor"
-                            ]}
-                            delay={100}
-                            waitTime={1500}
-                        />
-                        <motion.span
-                            animate={{ opacity: [0, 1, 0] }}
-                            transition={{ repeat: Infinity, duration: 0.8 }}
-                            className="inline-block w-1 h-10 md:h-16 bg-ds-dark ml-1 align-bottom"
-                        ></motion.span>
-                    </span>
-                </h1>
+                        <main className="min-h-screen bg-ds-dark">
 
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto font-medium">
-                    Así se disfruta el sabor que explota. ¡Etiquétanos para aparecer aquí!
-                </p>
-            </section>
+                            {/* Hero Section */}
+                            <section className="relative pt-32 pb-12 px-4 overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-full z-0 opacity-10">
+                                    <div style={{ backgroundImage: 'url("/pattern-bg.png")', opacity: 0.3 }} className="w-full h-full"></div>
+                                </div>
 
-            {/* Gallery Grid */}
-            <div className="container mx-auto pb-24 relative z-10">
-                <MasonryGallery />
-            </div>
+                                {/* Decorative Blobs */}
+                                <div className="absolute top-[-50%] left-[-10%] w-[80vw] h-[80vw] bg-ds-green/20 rounded-full blur-[100px] pointer-events-none"></div>
+                                <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-ds-yellow/10 rounded-full blur-[80px] pointer-events-none"></div>
 
-            <Footer />
-        </main>
-    );
+                                <div className="container mx-auto relative z-10 text-center">
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="inline-block bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 py-1 rounded-full text-sm font-bold mb-6"
+                                    >
+                                        <Camera className="w-4 h-4 inline-block mr-2" />
+                                        MOMENTOS DS
+                                    </motion.div>
+                                    <motion.h1
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.1 }}
+                                        className="text-5xl md:text-7xl font-display font-black text-white mb-6"
+                                    >
+                                        Nuestra <span className="text-ds-yellow">Galería</span>
+                                    </motion.h1>
+                                    <motion.p
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.2 }}
+                                        className="text-xl text-gray-400 max-w-2xl mx-auto"
+                                    >
+                                        Un recorrido visual por nuestra planta, nuestra gente y la alegría de compartir el mejor sabor.
+                                    </motion.p>
+                                </div>
+                            </section>
+
+                            <div className="container mx-auto px-4 pb-20">
+                                {/* Filter Buttons */}
+
+                                <MasonryGallery />
+                            </div>
+
+                            <Footer />
+                        </main>
+                        );
 }
