@@ -120,7 +120,7 @@ const MemoryGame = () => {
                             transition={{ duration: 0.6, animationDirection: "normal" }}
                             style={{ transformStyle: 'preserve-3d' }}
                         >
-                            {/* Front (Hidden state - Shows Logo - 0 deg) - Force Update */}
+                            {/* Front (Hidden state - Shows Logo - 0 deg) */}
                             <div
                                 className="absolute inset-0 bg-ds-yellow rounded-xl flex items-center justify-center border-4 border-white shadow-md overflow-hidden p-4"
                                 style={{ backfaceVisibility: 'hidden' }}
