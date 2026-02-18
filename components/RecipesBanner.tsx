@@ -51,26 +51,29 @@ const RecipesBanner = () => {
                             </motion.div>
                         </div>
 
-                        {/* Image Composition */}
-                        <div className="md:w-6/12 relative h-[400px] md:h-[500px] w-full flex items-center justify-center">
+                        {/* Image Composition - Pop Out Circle */}
+                        <div className="md:w-6/12 relative h-[450px] md:h-[550px] w-full flex items-end justify-center">
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.8, x: 50 }}
-                                whileInView={{ opacity: 1, scale: 1, x: 0 }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.8 }}
-                                className="relative z-10 w-full h-full"
+                                className="relative w-full max-w-md h-full flex items-end justify-center"
                             >
-                                <Image
-                                    src="/images/girl-eating.png"
-                                    alt="Disfrutando Snacks DS"
-                                    fill
-                                    className="object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                />
-                            </motion.div>
+                                {/* Circle Background */}
+                                <div className="absolute bottom-0 w-[300px] h-[300px] md:w-[400px] md:h-[400px] bg-ds-yellow rounded-full shadow-2xl z-0"></div>
 
-                            {/* Decorative background circle */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-white/10 rounded-full blur-3xl -z-0"></div>
+                                {/* Girl Image Popping Out */}
+                                <div className="relative z-10 w-full h-[110%] -mb-4">
+                                    <Image
+                                        src="/images/girl-eating.png"
+                                        alt="Disfrutando Snacks DS"
+                                        fill
+                                        className="object-contain hover:scale-105 transition-transform duration-500"
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                    />
+                                </div>
+                            </motion.div>
                         </div>
                     </div>
                 </div>
