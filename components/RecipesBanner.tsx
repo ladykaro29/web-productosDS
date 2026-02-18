@@ -66,7 +66,7 @@ const RecipesBanner = () => {
                                 {/* Girl Image Popping Out */}
                                 <div className="relative z-10 w-full h-[110%] -mb-4">
                                     <Image
-                                        src="/images/girl-eating.png"
+                                        src="/images/girl-pop.png"
                                         alt="Disfrutando Snacks DS"
                                         fill
                                         className="object-contain hover:scale-105 transition-transform duration-500"
