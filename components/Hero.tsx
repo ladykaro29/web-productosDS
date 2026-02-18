@@ -144,49 +144,43 @@ const Hero = () => {
                 </motion.div>
 
                 {/* Hero Image Carousel */}
-                <div className="relative h-[400px] md:h-[600px] flex items-center justify-center">
-                    <div className="relative w-full h-full max-w-md flex items-center justify-center">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentProduct.id}
-                                initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-                                animate={{ opacity: 1, scale: 1, rotate: -5 }}
-                                exit={{ opacity: 0, scale: 0.8, rotate: 10 }}
-                                transition={{ duration: 0.5 }}
-                                className={`absolute w-[280px] h-[380px] md:w-[320px] md:h-[420px] bg-gradient-to-tr ${currentProduct.gradient} rounded-[2.5rem] shadow-2xl flex items-center justify-center border-4 border-white/20`}
-                            >
-                                <motion.span
-                                    initial={{ opacity: 0, y: 50 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.2, duration: 0.5 }}
-                                    className="absolute text-4xl md:text-5xl font-black text-white/20 transform -rotate-90 whitespace-nowrap select-none"
-                                >
-                                    SNACKS DS
-                                </motion.span>
-
-                                <motion.div
-                                    animate={{ y: [0, -15, 0] }}
-                                    transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                                    className="relative w-full h-full p-2 md:p-4"
-                                >
-                                    <Image
-                                        src={currentProduct.image}
-                                        alt={currentProduct.name}
-                                        fill
-                                        className="object-contain drop-shadow-2xl hover:scale-110 transition-transform duration-500"
-                                        priority
-                                    />
-                                </motion.div>
-                            </motion.div>
-                        </AnimatePresence>
-
-                        {/* Floating Decoration */}
+                {/* Hero Image - Girl Eating Snacks */}
+                <div className="relative h-[500px] md:h-[650px] flex items-end justify-center md:justify-end">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 50 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="relative w-full h-full max-w-[600px]"
+                    >
+                        {/* Floating Products around the girl */}
                         <motion.div
-                            animate={{ y: [0, 15, 0], rotate: [0, 10, 0] }}
-                            transition={{ repeat: Infinity, duration: 3, delay: 1 }}
-                            className="absolute -top-4 -right-4 w-20 h-20 bg-yellow-400 rounded-full blur-xl opacity-50 z-[-1]"
+                            animate={{ y: [-10, 10, -10] }}
+                            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                            className="absolute top-20 left-0 w-32 h-32 md:w-40 md:h-40 z-20"
+                        >
+                            <Image src="/products/platanos-picante-final.png" alt="Platanitos" fill className="object-contain drop-shadow-xl rotate-[-12deg]" />
+                        </motion.div>
+
+                        <motion.div
+                            animate={{ y: [10, -10, 10] }}
+                            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
+                            className="absolute bottom-40 right-0 md:-right-10 w-28 h-28 md:w-36 md:h-36 z-20"
+                        >
+                            <Image src="/products/trozitos.png" alt="Trozitos" fill className="object-contain drop-shadow-xl rotate-[12deg]" />
+                        </motion.div>
+
+                        <Image
+                            src="/images/girl-eating.png"
+                            alt="Disfrutando Productos DS"
+                            fill
+                            className="object-contain object-bottom z-10"
+                            priority
+                            sizes="(max-width: 768px) 100vw, 50vw"
                         />
-                    </div>
+
+                        {/* Glow effect behind */}
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[60%] bg-white/20 blur-[80px] rounded-full z-0"></div>
+                    </motion.div>
                 </div>
             </div>
 

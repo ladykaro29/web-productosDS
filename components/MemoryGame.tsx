@@ -122,15 +122,15 @@ const MemoryGame = () => {
                         >
                             {/* Front (Hidden state - Shows Logo - 0 deg) */}
                             <div
-                                className="absolute inset-0 bg-ds-green rounded-xl flex items-center justify-center border-4 border-white shadow-md overflow-hidden p-4"
+                                className="absolute inset-0 bg-ds-yellow rounded-xl flex items-center justify-center border-4 border-white shadow-md overflow-hidden p-4"
                                 style={{ backfaceVisibility: 'hidden' }}
                             >
-                                <div className="relative w-full h-full opacity-80">
+                                <div className="relative w-full h-full">
                                     <Image
                                         src="/logo.png"
                                         alt="DS Logo"
                                         fill
-                                        className="object-contain brightness-0 invert"
+                                        className="object-contain"
                                     />
                                 </div>
                             </div>
