@@ -81,130 +81,14 @@ const CatchGame = () => {
         if (saved) setHighScore(parseInt(saved));
     }, []);
 
-    // Game Loop
-    const animate = () => {
-        const canvas = canvasRef.current;
-        const ctx = canvas?.getContext('2d');
-        if (!canvas || !ctx) return;
-
-        // Clear Canvas
-        ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-
-        // Update Game State
-        if (gameState === 'playing') {
-            frameCountRef.current++;
-
-            // Spawn Items
-            // Use fallback if images not fully loaded, or just spawn anyway and use rects
-            if (frameCountRef.current % spawnRateRef.current === 0) {
-                const randomImageIndex = Math.floor(Math.random() * PRODUCTS.length); // Use index to pick image safely
-                const randomImage = imagesRef.current[randomImageIndex];
-
-                const newItem: GameObject = {
-                    x: Math.random() * (GAME_WIDTH - ITEM_SIZE),
-                    y: -ITEM_SIZE,
-                    width: ITEM_SIZE,
-                    height: ITEM_SIZE,
-                    image: randomImage, // Might be incomplete/loading
-                    type: 'good',
-                    id: Date.now() + Math.random(),
-                    speed: gameSpeedRef.current + Math.random() * 2
-                };
-                itemsRef.current.push(newItem);
-            }
-
-            // Increase Difficulty
-            if (frameCountRef.current % 600 === 0) {
-                gameSpeedRef.current += 0.5;
-                spawnRateRef.current = Math.max(20, spawnRateRef.current - 5);
-            }
-
-            // Move & Draw Items
-            itemsRef.current.forEach((item, index) => {
-                item.y += item.speed;
-
-                // Draw Item
-                if (item.image && item.image.complete && item.image.naturalWidth !== 0) {
-                    ctx.save();
-                    ctx.shadowColor = 'rgba(0,0,0,0.2)';
-                    ctx.shadowBlur = 10;
-                    ctx.drawImage(item.image, item.x, item.y, item.width, item.height);
-                    ctx.restore();
-                } else {
-                    // Fallback Render (Yellow Box) if image fails
-                    ctx.fillStyle = '#FCD34D'; // Yellow
-                    ctx.beginPath();
-                    ctx.roundRect(item.x, item.y, item.width, item.height, 10);
-                    ctx.fill();
-                    ctx.fillStyle = '#000';
-                    ctx.font = '12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('SNACK', item.x + item.width / 2, item.y + item.height / 2);
-                }
-
-                // Collision Detection
-                if (
-                    item.y + item.height > GAME_HEIGHT - PLAYER_HEIGHT + 20 &&
-                    item.y < GAME_HEIGHT &&
-                    item.x + item.width > playerXRef.current &&
-                    item.x < playerXRef.current + PLAYER_WIDTH
-                ) {
-                    // CATCH!
-                    scoreRef.current += 10;
-                    setScore(scoreRef.current);
-                    itemsRef.current.splice(index, 1);
-                }
-                // Missed Item
-                else if (item.y > GAME_HEIGHT) {
-                    itemsRef.current.splice(index, 1);
-                    livesRef.current -= 1;
-                    setLives(livesRef.current);
-                    if (livesRef.current <= 0) {
-                        endGame();
-                    }
-                }
-            });
-
-            // Draw Basket (Player)
-            const x = playerXRef.current;
-            const y = GAME_HEIGHT - PLAYER_HEIGHT + 20;
-            const w = PLAYER_WIDTH;
-            const h = PLAYER_HEIGHT - 20;
-
-            // Basket Body
-            ctx.fillStyle = '#f59e0b';
-            ctx.beginPath();
-            if (ctx.roundRect) {
-                ctx.roundRect(x, y, w, h, [0, 0, 30, 30]);
-            } else {
-                ctx.rect(x, y, w, h);
-            }
-            ctx.fill();
-
-            // Basket Rim
-            ctx.strokeStyle = '#78350f';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-
-            // Handle
-            ctx.fillStyle = '#166534';
-            ctx.fillRect(x - 10, y + 10, 20, 10);
-            ctx.fillRect(x + w - 10, y + 10, 20, 10);
-
-            // Label
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 24px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText("DS", x + w / 2, y + h / 2 + 10);
+    // Game Loop Management
+    useEffect(() => {
+        if (gameState !== 'playing') {
+            if (requestRef.current) cancelAnimationFrame(requestRef.current);
+            return;
         }
 
-        requestRef.current = requestAnimationFrame(animate);
-    };
-
-    const startGame = () => {
-        setGameState('playing');
-        setScore(0);
-        setLives(3);
+        // Initialize Game State logic when switching to Playing
         scoreRef.current = 0;
         livesRef.current = 3;
         itemsRef.current = [];
@@ -212,13 +96,160 @@ const CatchGame = () => {
         gameSpeedRef.current = SPEED_INITIAL;
         spawnRateRef.current = SPAWN_RATE_INITIAL;
 
+        // Ensure images are unique if re-mounting
+        // (imagesRef is stable across re-renders, assuming logic in mount effect is correct)
+
+        const animate = () => {
+            const canvas = canvasRef.current;
+            const ctx = canvas?.getContext('2d');
+            if (!canvas || !ctx) {
+                requestRef.current = requestAnimationFrame(animate);
+                return;
+            }
+
+            try {
+                // Clear Canvas
+                ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+                frameCountRef.current++;
+
+                // Spawn Items
+                if (frameCountRef.current % spawnRateRef.current === 0) {
+                    const randomImageIndex = Math.floor(Math.random() * PRODUCTS.length);
+                    // Handle potential empty images array safely
+                    const randomImage = imagesRef.current.length > 0 ? imagesRef.current[randomImageIndex] : undefined;
+
+                    const newItem: GameObject = {
+                        x: Math.random() * (GAME_WIDTH - ITEM_SIZE),
+                        y: -ITEM_SIZE,
+                        width: ITEM_SIZE,
+                        height: ITEM_SIZE,
+                        image: randomImage as HTMLImageElement,
+                        type: 'good',
+                        id: Date.now() + Math.random(),
+                        speed: gameSpeedRef.current + Math.random() * 2
+                    };
+                    itemsRef.current.push(newItem);
+                }
+
+                // Increase Difficulty
+                if (frameCountRef.current % 600 === 0) {
+                    gameSpeedRef.current += 0.5;
+                    spawnRateRef.current = Math.max(20, spawnRateRef.current - 5);
+                }
+
+                // Move & Draw Items
+                itemsRef.current.forEach((item, index) => {
+                    item.y += item.speed;
+
+                    // Draw Item
+                    if (item.image && item.image.complete && item.image.naturalWidth !== 0) {
+                        ctx.save();
+                        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                        ctx.shadowBlur = 10;
+                        ctx.drawImage(item.image, item.x, item.y, item.width, item.height);
+                        ctx.restore();
+                    } else {
+                        // Fallback Render (Yellow Box)
+                        ctx.fillStyle = '#FCD34D';
+                        ctx.beginPath();
+                        if (typeof ctx.roundRect === 'function') {
+                            ctx.roundRect(item.x, item.y, item.width, item.height, 10);
+                        } else {
+                            ctx.rect(item.x, item.y, item.width, item.height);
+                        }
+                        ctx.fill();
+                        ctx.fillStyle = '#000';
+                        ctx.font = '12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('SNACK', item.x + item.width / 2, item.y + item.height / 2);
+                    }
+
+                    // Collision Detection
+                    if (
+                        item.y + item.height > GAME_HEIGHT - PLAYER_HEIGHT + 20 &&
+                        item.y < GAME_HEIGHT &&
+                        item.x + item.width > playerXRef.current &&
+                        item.x < playerXRef.current + PLAYER_WIDTH
+                    ) {
+                        // CATCH!
+                        scoreRef.current += 10;
+                        setScore(scoreRef.current);
+                        itemsRef.current.splice(index, 1);
+                    }
+                    // Missed Item
+                    else if (item.y > GAME_HEIGHT) {
+                        itemsRef.current.splice(index, 1);
+                        livesRef.current -= 1;
+                        setLives(livesRef.current);
+                        if (livesRef.current <= 0) {
+                            // End Game Logic handled in effect or separate call?
+                            // Can't call setGameState inside loop easily without triggering cleanup.
+                            // We'll handle end game by setting state, which cleans up this effect.
+                            endGame();
+                        }
+                    }
+                });
+
+                // Draw Basket (Player)
+                const x = playerXRef.current;
+                const y = GAME_HEIGHT - PLAYER_HEIGHT + 20;
+                const w = PLAYER_WIDTH;
+                const h = PLAYER_HEIGHT - 20;
+
+                // Basket Body
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                if (typeof ctx.roundRect === 'function') {
+                    ctx.roundRect(x, y, w, h, [0, 0, 30, 30]);
+                } else {
+                    ctx.rect(x, y, w, h);
+                }
+                ctx.fill();
+
+                // Basket Rim
+                ctx.strokeStyle = '#78350f';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Handle
+                ctx.fillStyle = '#166534';
+                ctx.fillRect(x - 10, y + 10, 20, 10);
+                ctx.fillRect(x + w - 10, y + 10, 20, 10);
+
+                // Label
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText("DS", x + w / 2, y + h / 2 + 10);
+
+                if (gameState === 'playing') {
+                    requestRef.current = requestAnimationFrame(animate);
+                }
+
+            } catch (error) {
+                console.error("Game Loop Error:", error);
+                // Try to continue? Or stop?
+                requestRef.current = requestAnimationFrame(animate);
+            }
+        };
+
         requestRef.current = requestAnimationFrame(animate);
+
+        return () => {
+            if (requestRef.current) cancelAnimationFrame(requestRef.current);
+        };
+    }, [gameState]); // Re-run when gameState changes
+
+    const startGame = () => {
+        setScore(0);
+        setLives(3);
+        setGameState('playing');
+        // Logic moved to effect
     };
 
     const endGame = () => {
         setGameState('gameover');
-        if (requestRef.current) cancelAnimationFrame(requestRef.current);
-
         if (scoreRef.current > highScore) {
             setHighScore(scoreRef.current);
             localStorage.setItem('ds_game_highscore', scoreRef.current.toString());
